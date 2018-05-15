@@ -5,8 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BattleCars"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
+        Title="MainWindow" Height="450.763" Width="800" KeyDown="ControlTheCar">
+    <Grid Margin="0,0,0,-1" Height="421" VerticalAlignment="Top">
+        <Canvas x:Name="stadium" HorizontalAlignment="Left"  VerticalAlignment="Top" Height="421" Width="792" >
+            <Rectangle x:Name="p1_grid" Height="120" Canvas.Left="10" Canvas.Top="10" Width="80">
+                <Rectangle.Fill>
+                    <ImageBrush ImageSource="Resources/start.png" Stretch="Fill"/>
+                </Rectangle.Fill>
+            </Rectangle>
+            <Rectangle x:Name="p2_grid" Height="120" Canvas.Left="702" Canvas.Top="291" Width="80">
+                <Rectangle.Fill>
+                    <ImageBrush ImageSource="Resources/start.png" Stretch="Fill"/>
+                </Rectangle.Fill>
+            </Rectangle>
+
+
+        </Canvas>
+
     </Grid>
 </Window>
