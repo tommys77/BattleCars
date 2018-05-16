@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using BattleCars.Controls;
 
 namespace BattleCars
 {
@@ -26,22 +27,17 @@ namespace BattleCars
         private BitmapImage blue_car = new BitmapImage(new Uri(@"pack://siteoforigin:,,,/resources/blue_car.png"));
         private BitmapImage red_car = new BitmapImage(new Uri(@"pack://siteoforigin:,,,/resources/red_car.png"));
 
-        private string blue = "p1";
-        private string red = "p2";
+        private Player1 P1;
+        private Player2 P2;
+
+        //private string blue = "p1";
+        //private string red = "p2";
 
         private ObservableCollection<Image> players = new ObservableCollection<Image>();
 
         DispatcherTimer timer = new DispatcherTimer();
 
         double p1_X, p1_Y, p2_X, p2_Y;
-
-        private enum Direction
-        {
-            FORWARD = 3,
-            BACKWARD = 1,
-            LEFT = 1,
-            RIGHT = 1
-        }
 
         public MainWindow()
         {
@@ -53,6 +49,7 @@ namespace BattleCars
         {
             timer.Interval = TimeSpan.FromMilliseconds(10);
             timer.Tick += new EventHandler(TimerTick);
+            timer.Start();
 
             //Set start positions
             p1_X = Canvas.GetLeft(p1_grid);
@@ -60,92 +57,117 @@ namespace BattleCars
             p2_X = Canvas.GetLeft(p2_grid);
             p2_Y = Canvas.GetTop(p2_grid);
 
-            CreatePlayers();
+            //CreatePlayers();
             SetupGame();
         }
 
         private void TimerTick(object sender, EventArgs e)
         {
-            var cars = stadium.Children.OfType<Image>();
-
-            foreach (var car in cars)
-            {
-                var xPos = Canvas.GetLeft(car);
-                var yPos = Canvas.GetTop(car);
-
-                switch (car.Name)
-                {
-                    case "p1":
-                        if (xPos + car.Width < 0)
-                        {
-                            p1_X = stadium.Width - car.Width;
-                        }
-                        if (xPos > stadium.Width)
-                        {
-                            p1_X = 0;
-                        }
-                        if(yPos + car.Height < 0)
-                        {
-                            p1_Y = stadium.Height;
-                        }
-                        if(yPos > stadium.Height)
-                        {
-                            p1_Y = 0;
-                        }
-                        Canvas.SetLeft(car, p1_X);
-                        Canvas.SetTop(car, p1_Y);
-                        break;
-                    case "p2":
-                        Canvas.SetLeft(car, p2_X);
-                        Canvas.SetTop(car, p2_Y);
-                        break;
-                }
-            }
+            RedrawCars();
         }
 
-        private void CreatePlayers()
+        private void RedrawCars()
         {
-            //width and height
-            var w = 40;
-            var h = 60;
+            //Player 1
+            if (KeyIsPressed.P1_DOWN)
+            {
+                p1_Y += (double)PlayerControl.Speed.BACKWARD;
+            }
+            if (KeyIsPressed.P1_UP)
+            {
+                p1_Y -= (double)PlayerControl.Speed.FORWARD;
+            }
+            if (KeyIsPressed.P1_LEFT)
+            {
+                p1_X -= (double)PlayerControl.Speed.LEFT;
+            }
+            if (KeyIsPressed.P1_RIGHT)
+            {
+                p1_X += (double)PlayerControl.Speed.RIGHT;
+            }
 
-            var p1 = new Image() { Width = w, Height = h };
-            var p2 = new Image() { Width = w, Height = h };
-            p1.Source = blue_car;
-            p1.Name = blue;
-            p2.Source = red_car;
-            p2.Name = red;
 
-            stadium.Children.Add(p1);
-            stadium.Children.Add(p2);
+            //Player 2
+            if (KeyIsPressed.P2_DOWN)
+            {
+                p2_Y += (double)PlayerControl.Speed.BACKWARD;
+            }
+            if (KeyIsPressed.P2_UP)
+            {
+                p2_Y -= (double)PlayerControl.Speed.FORWARD;
+            }
+            if (KeyIsPressed.P2_LEFT)
+            {
+                p2_X -= (double)PlayerControl.Speed.LEFT;
+            }
+            if (KeyIsPressed.P2_RIGHT)
+            {
+                p2_X += (double)PlayerControl.Speed.RIGHT;
+            }
+
+            FurtherAdjustPostions();
+        }
+
+        private void FurtherAdjustPostions()
+        {
+            //Player 1
+            if (p1_X + P1.ActualWidth < 0)
+            {
+                p1_X = arena.Width - P1.ActualWidth;
+            }
+            if (p1_X > arena.Width)
+            {
+                p1_X = 0;
+            }
+            if (p1_Y + P1.ActualHeight < 0)
+            {
+                p1_Y = arena.Height;
+            }
+            if (p1_Y > arena.Height)
+            {
+                p1_Y = 0 - P1.ActualHeight;
+            }
+
+            //Player 2
+            if (p2_X + P2.ActualWidth < 0)
+            {
+                p2_X = arena.Width - P2.ActualWidth;
+            }
+            if (p2_X > arena.Width)
+            {
+                p2_X = 0;
+            }
+            if (p2_Y + P2.ActualHeight < 0)
+            {
+                p2_Y = arena.Height;
+            }
+            if (p2_Y > arena.Height)
+            {
+                p2_Y = 0 - P2.ActualHeight;
+            }
+
+            Canvas.SetLeft(P1, p1_X);
+            Canvas.SetTop(P1, p1_Y);
+            Canvas.SetLeft(P2, p2_X);
+            Canvas.SetTop(P2, p2_Y);
         }
 
         public void SetupGame()
         {
-            timer.Start();
+            P1 = new Player1();
+            P2 = new Player2();
+            arena.Children.Add(P1);
+            arena.Children.Add(P2);
         }
-
-
 
         private void ControlTheCar(object sender, KeyEventArgs e)
         {
-            var key = e.Key;
+            KeyIsPressed.SetTrue(e.Key);
+        }
 
-            switch (key)
-            {
-                case Key.W:
-                    p1_Y -= (double)Direction.FORWARD;
-                    break;
-                case Key.A:
-                    p1_X -= (double)Direction.LEFT;
-                    break;
-                case Key.S:
-                    p1_Y += (double)Direction.BACKWARD;
-                    break;
-                case Key.D:
-                    p1_X += (double)Direction.RIGHT;
-                    break;
-            }
+        private void KeyReleased(object sender, KeyEventArgs e)
+        {
+            KeyIsPressed.SetFalse(e.Key);
         }
     }
 }

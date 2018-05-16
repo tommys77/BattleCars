@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BattleCars"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450.763" Width="800" KeyDown="ControlTheCar">
+        Title="MainWindow" Height="450.763" Width="800" KeyDown="ControlTheCar" KeyUp="KeyReleased">
     <Grid Margin="0,0,0,-1" Height="421" VerticalAlignment="Top">
-        <Canvas x:Name="stadium" HorizontalAlignment="Left"  VerticalAlignment="Top" Height="421" Width="792" >
+        <Canvas x:Name="arena" HorizontalAlignment="Left"  VerticalAlignment="Top" Height="421" Width="792" >
             <Rectangle x:Name="p1_grid" Height="120" Canvas.Left="10" Canvas.Top="10" Width="80">
                 <Rectangle.Fill>
                     <ImageBrush ImageSource="Resources/start.png" Stretch="Fill"/>
