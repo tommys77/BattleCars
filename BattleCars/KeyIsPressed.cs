@@ -87,6 +87,7 @@ namespace BattleCars
                     break;
             }
     }
+
         public static bool CheckForTruths
         {
             get

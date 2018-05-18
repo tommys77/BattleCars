@@ -27,9 +27,11 @@ namespace BattleCars
         private BitmapImage blue_car = new BitmapImage(new Uri(@"pack://siteoforigin:,,,/resources/blue_car.png"));
         private BitmapImage red_car = new BitmapImage(new Uri(@"pack://siteoforigin:,,,/resources/red_car.png"));
 
-        private Player1 P1;
-        private Player2 P2;
+        private PlayerControl _p1;
+        private PlayerControl _p2;
 
+        private Vehicle player1;
+        private Vehicle player2;
         //private string blue = "p1";
         //private string red = "p2";
 
@@ -51,14 +53,39 @@ namespace BattleCars
             timer.Tick += new EventHandler(TimerTick);
             timer.Start();
 
-            //Set start positions
-            p1_X = Canvas.GetLeft(p1_grid);
-            p1_Y = Canvas.GetTop(p1_grid);
-            p2_X = Canvas.GetLeft(p2_grid);
-            p2_Y = Canvas.GetTop(p2_grid);
-
             //CreatePlayers();
             SetupGame();
+
+        }
+
+        public void SetupGame()
+        {
+            _p1 = new PlayerControl();
+            _p2 = new PlayerControl();
+
+            arena.Children.Add(_p1);
+            arena.Children.Add(_p2);
+
+            player1 = new Vehicle()
+            {
+                VehicleImage = blue_car,
+            };
+
+            player2 = new Vehicle()
+            {
+                VehicleImage = red_car,
+            };
+
+            _p1.DataContext = player1;
+            _p2.DataContext = player2;
+
+            p1_X = player1.Location.X;
+            p1_Y = player1.Location.Y;
+            p2_X = player2.Location.X;
+            p2_Y = player2.Location.Y;
+
+
+
         }
 
         private void TimerTick(object sender, EventArgs e)
@@ -69,96 +96,133 @@ namespace BattleCars
         private void RedrawCars()
         {
             //Player 1
-            if (KeyIsPressed.P1_DOWN)
+            switch (KeyIsPressed.P1_DOWN)
             {
-                p1_Y += (double)PlayerControl.Speed.BACKWARD;
+                case true: player1.IsMovingBackward = true; break;
+                case false: player1.IsMovingBackward = false; break;
             }
-            if (KeyIsPressed.P1_UP)
+
+            switch (KeyIsPressed.P1_UP)
             {
-                p1_Y -= (double)PlayerControl.Speed.FORWARD;
+                case true: player1.IsMovingForward = true; break;
+                case false: player1.IsMovingForward = false; break;
             }
+
             if (KeyIsPressed.P1_LEFT)
             {
-                p1_X -= (double)PlayerControl.Speed.LEFT;
+                player1.Angle -= (int)Vehicle.Speed.LEFT;
             }
             if (KeyIsPressed.P1_RIGHT)
             {
-                p1_X += (double)PlayerControl.Speed.RIGHT;
+                player1.Angle += (int)Vehicle.Speed.RIGHT;
             }
 
 
             //Player 2
-            if (KeyIsPressed.P2_DOWN)
+
+            switch (KeyIsPressed.P2_DOWN)
             {
-                p2_Y += (double)PlayerControl.Speed.BACKWARD;
+                case true: player2.IsMovingBackward = true; break;
+                case false: player2.IsMovingBackward = false; break;
             }
-            if (KeyIsPressed.P2_UP)
+
+            switch (KeyIsPressed.P2_UP)
             {
-                p2_Y -= (double)PlayerControl.Speed.FORWARD;
+                case true: player2.IsMovingForward = true; break;
+                case false: player2.IsMovingForward = false; break;
             }
+
             if (KeyIsPressed.P2_LEFT)
             {
-                p2_X -= (double)PlayerControl.Speed.LEFT;
+                //p2_X -= (double)Vehicle.Speed.LEFT;
+                player2.Angle -= (int)Vehicle.Speed.LEFT;
             }
             if (KeyIsPressed.P2_RIGHT)
             {
-                p2_X += (double)PlayerControl.Speed.RIGHT;
+                //p2_X += (double)Vehicle.Speed.RIGHT;
+                player2.Angle += (int)Vehicle.Speed.RIGHT;
             }
 
-            FurtherAdjustPostions();
+            Move(player1, _p1);
+            Move(player2, _p2);
         }
 
         private void FurtherAdjustPostions()
         {
             //Player 1
-            if (p1_X + P1.ActualWidth < 0)
+            var _1pos = new Point(player1.Location.X, player1.Location.Y);
+
+            //Point _1pos = new Point(Canvas.GetLeft(_p1.Car), Canvas.GetTop(_p1.Car));
+
+            if (_1pos.X + _p1.ActualWidth < 0)
             {
-                p1_X = arena.Width - P1.ActualWidth;
+                _1pos.X = arena.ActualWidth - _p1.ActualWidth;
             }
-            if (p1_X > arena.Width)
+            if (_1pos.X > arena.ActualWidth)
             {
-                p1_X = 0;
+                _1pos.X = 0;
             }
-            if (p1_Y + P1.ActualHeight < 0)
+            if (_1pos.Y + _p1.ActualHeight < 0)
             {
-                p1_Y = arena.Height;
+                _1pos.Y = arena.ActualHeight;
             }
-            if (p1_Y > arena.Height)
+            if (_1pos.Y > arena.Height)
             {
-                p1_Y = 0 - P1.ActualHeight;
+                _1pos.Y = 0 - _p1.ActualHeight;
             }
+
+            player1.Location = _1pos;
 
             //Player 2
-            if (p2_X + P2.ActualWidth < 0)
+
+            var _2pos = new Point(player2.Location.X, player2.Location.Y);
+
+            if (_2pos.X + _p2.ActualWidth < 0)
             {
-                p2_X = arena.Width - P2.ActualWidth;
+                _2pos.X = arena.ActualWidth - _p2.ActualWidth;
             }
-            if (p2_X > arena.Width)
+            if (_2pos.X > arena.ActualWidth)
             {
-                p2_X = 0;
+                _2pos.X = 0;
             }
-            if (p2_Y + P2.ActualHeight < 0)
+            if (_2pos.Y + _p2.ActualHeight < 0)
             {
-                p2_Y = arena.Height;
+                _2pos.Y = arena.ActualHeight;
             }
-            if (p2_Y > arena.Height)
+            if (_2pos.Y > arena.ActualHeight)
             {
-                p2_Y = 0 - P2.ActualHeight;
+                _2pos.Y = 0 - _p2.ActualHeight;
             }
 
-            Canvas.SetLeft(P1, p1_X);
-            Canvas.SetTop(P1, p1_Y);
-            Canvas.SetLeft(P2, p2_X);
-            Canvas.SetTop(P2, p2_Y);
+            player2.Location = _2pos;
+
+
         }
 
-        public void SetupGame()
+        private void Move(Vehicle vehicle, PlayerControl playerControl)
         {
-            P1 = new Player1();
-            P2 = new Player2();
-            arena.Children.Add(P1);
-            arena.Children.Add(P2);
+
+            double radians = (Math.PI / 180) * vehicle.Angle;
+            var vector = new Vector() { X = Math.Sin(radians), Y = -Math.Cos(radians) };
+
+            //vehicle.Location = new Point(Canvas.GetLeft(playerControl), Canvas.GetTop(playerControl));
+
+            if (vehicle.IsMovingForward)
+            {
+                vehicle.Location += (vector * (int)Vehicle.Speed.FORWARD);
+            }
+            else if (vehicle.IsMovingBackward)
+            {
+                vehicle.Location -= (vector * (int)Vehicle.Speed.BACKWARD);
+            }
+
+            FurtherAdjustPostions();
+
+            Canvas.SetLeft(playerControl, vehicle.Location.X);
+            Canvas.SetTop(playerControl, vehicle.Location.Y);
+
         }
+
 
         private void ControlTheCar(object sender, KeyEventArgs e)
         {
