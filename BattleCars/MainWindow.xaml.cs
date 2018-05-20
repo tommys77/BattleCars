@@ -30,6 +30,9 @@ namespace BattleCars
         private PlayerControl _p1;
         private PlayerControl _p2;
 
+        private Point p1StartPos;
+        private Point p2StartPos;
+
         private Vehicle player1;
         private Vehicle player2;
         //private string blue = "p1";
@@ -39,7 +42,7 @@ namespace BattleCars
 
         DispatcherTimer timer = new DispatcherTimer();
 
-        double p1_X, p1_Y, p2_X, p2_Y;
+        // double p1_X, p1_Y, p2_X, p2_Y;
 
         public MainWindow()
         {
@@ -53,7 +56,6 @@ namespace BattleCars
             timer.Tick += new EventHandler(TimerTick);
             timer.Start();
 
-            //CreatePlayers();
             SetupGame();
 
         }
@@ -66,34 +68,45 @@ namespace BattleCars
             arena.Children.Add(_p1);
             arena.Children.Add(_p2);
 
+            p1StartPos = new Point(Canvas.GetLeft(p1grid) + (p1grid.Width / 2) - (_p1.vehicle.Width / 2), Canvas.GetTop(p1grid) + (p1grid.Height / 3));
+            p2StartPos = new Point(Canvas.GetLeft(p2grid) + (p2grid.Width / 2) - (_p2.vehicle.Width / 2), Canvas.GetTop(p2grid) + (p2grid.Height / 3));
+
             player1 = new Vehicle()
             {
+                Position = p1StartPos,
                 VehicleImage = blue_car,
+                Angle = 180
             };
+
 
             player2 = new Vehicle()
             {
+                Position = p2StartPos,
                 VehicleImage = red_car,
             };
 
             _p1.DataContext = player1;
             _p2.DataContext = player2;
 
-            p1_X = player1.Location.X;
-            p1_Y = player1.Location.Y;
-            p2_X = player2.Location.X;
-            p2_Y = player2.Location.Y;
-
-
-
+            //p1_X = player1.Position.X;
+            //p1_Y = player1.Position.Y;
+            //p2_X = player2.Position.X;
+            //p2_Y = player2.Position.Y;
         }
 
         private void TimerTick(object sender, EventArgs e)
         {
-            RedrawCars();
+            SetPositions();
+
+            Canvas.SetLeft(_p1, player1.Position.X);
+            Canvas.SetTop(_p1, player1.Position.Y);
+            Canvas.SetLeft(_p2, player2.Position.X);
+            Canvas.SetTop(_p2, player2.Position.Y);
         }
 
-        private void RedrawCars()
+
+        //There may be a better way to do this without repeating so much code.
+        private void SetPositions()
         {
             //Player 1
             switch (KeyIsPressed.P1_DOWN)
@@ -110,16 +123,19 @@ namespace BattleCars
 
             if (KeyIsPressed.P1_LEFT)
             {
-                player1.Angle -= (int)Vehicle.Speed.LEFT;
+                player1.RotationDirection = -1;
             }
             if (KeyIsPressed.P1_RIGHT)
             {
-                player1.Angle += (int)Vehicle.Speed.RIGHT;
+                player1.RotationDirection = 1;
             }
 
+            if (!KeyIsPressed.P1_LEFT && !KeyIsPressed.P1_RIGHT)
+            {
+                player1.RotationDirection = 0;
+            }
 
             //Player 2
-
             switch (KeyIsPressed.P2_DOWN)
             {
                 case true: player2.IsMovingBackward = true; break;
@@ -134,104 +150,65 @@ namespace BattleCars
 
             if (KeyIsPressed.P2_LEFT)
             {
-                //p2_X -= (double)Vehicle.Speed.LEFT;
-                player2.Angle -= (int)Vehicle.Speed.LEFT;
+                player2.RotationDirection = -1;
             }
             if (KeyIsPressed.P2_RIGHT)
             {
-                //p2_X += (double)Vehicle.Speed.RIGHT;
-                player2.Angle += (int)Vehicle.Speed.RIGHT;
+                player2.RotationDirection = 1;
+            }
+            if (!KeyIsPressed.P2_LEFT && !KeyIsPressed.P2_RIGHT)
+            {
+                player2.RotationDirection = 0;
             }
 
-            Move(player1, _p1);
-            Move(player2, _p2);
+            WhenCrossingTheEdge();
         }
 
-        private void FurtherAdjustPostions()
+
+        //This method checks the positions further and accordingly creates the illusion of 
+        // making the player teleport to the other side if the player goes past the edge
+        // of the canvas.
+
+        private void WhenCrossingTheEdge()
         {
-            //Player 1
-            var _1pos = new Point(player1.Location.X, player1.Location.Y);
-
-            //Point _1pos = new Point(Canvas.GetLeft(_p1.Car), Canvas.GetTop(_p1.Car));
-
-            if (_1pos.X + _p1.ActualWidth < 0)
+            foreach (var player in arena.Children.OfType<PlayerControl>())
             {
-                _1pos.X = arena.ActualWidth - _p1.ActualWidth;
-            }
-            if (_1pos.X > arena.ActualWidth)
-            {
-                _1pos.X = 0;
-            }
-            if (_1pos.Y + _p1.ActualHeight < 0)
-            {
-                _1pos.Y = arena.ActualHeight;
-            }
-            if (_1pos.Y > arena.Height)
-            {
-                _1pos.Y = 0 - _p1.ActualHeight;
-            }
+                var vehicle = player.DataContext as Vehicle;
 
-            player1.Location = _1pos;
+                var pos = new Point(vehicle.Position.X, vehicle.Position.Y);
 
-            //Player 2
+                if (pos.X + _p1.ActualWidth < 0)
+                {
+                    pos.X = arena.ActualWidth - player.ActualWidth;
+                }
+                if (pos.X > arena.ActualWidth)
+                {
+                    pos.X = 0;
+                }
+                if (pos.Y + _p1.ActualHeight < 0)
+                {
+                    pos.Y = arena.ActualHeight;
+                }
+                if (pos.Y > arena.ActualHeight)
+                {
+                    pos.Y = 0 - player.ActualHeight;
+                }
 
-            var _2pos = new Point(player2.Location.X, player2.Location.Y);
-
-            if (_2pos.X + _p2.ActualWidth < 0)
-            {
-                _2pos.X = arena.ActualWidth - _p2.ActualWidth;
+                vehicle.Position = pos;
+                vehicle.Move();
             }
-            if (_2pos.X > arena.ActualWidth)
-            {
-                _2pos.X = 0;
-            }
-            if (_2pos.Y + _p2.ActualHeight < 0)
-            {
-                _2pos.Y = arena.ActualHeight;
-            }
-            if (_2pos.Y > arena.ActualHeight)
-            {
-                _2pos.Y = 0 - _p2.ActualHeight;
-            }
-
-            player2.Location = _2pos;
-
-
         }
 
-        private void Move(Vehicle vehicle, PlayerControl playerControl)
-        {
-
-            double radians = (Math.PI / 180) * vehicle.Angle;
-            var vector = new Vector() { X = Math.Sin(radians), Y = -Math.Cos(radians) };
-
-            //vehicle.Location = new Point(Canvas.GetLeft(playerControl), Canvas.GetTop(playerControl));
-
-            if (vehicle.IsMovingForward)
-            {
-                vehicle.Location += (vector * (int)Vehicle.Speed.FORWARD);
-            }
-            else if (vehicle.IsMovingBackward)
-            {
-                vehicle.Location -= (vector * (int)Vehicle.Speed.BACKWARD);
-            }
-
-            FurtherAdjustPostions();
-
-            Canvas.SetLeft(playerControl, vehicle.Location.X);
-            Canvas.SetTop(playerControl, vehicle.Location.Y);
-
-        }
-
-
-        private void ControlTheCar(object sender, KeyEventArgs e)
+        private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             KeyIsPressed.SetTrue(e.Key);
         }
 
-        private void KeyReleased(object sender, KeyEventArgs e)
+        private void Window_KeyUp(object sender, KeyEventArgs e)
         {
             KeyIsPressed.SetFalse(e.Key);
         }
+
+
     }
 }

@@ -16,11 +16,11 @@ namespace BattleCars
         public bool IsMovingBackward { get; set; }
         public int RotationDirection { get; set; }
 
-        public enum Speed { FORWARD = 5, BACKWARD = 2, LEFT = 3, RIGHT = 3 }
+        public enum Speed { FORWARD = 5, BACKWARD = 2, ROTATION = 3 }
 
-        public Vehicle ()
+        public Vehicle()
         {
-            Timer timer = new Timer(x => Move(), null, 0, 50);
+            // Timer timer = new Timer(x => Move(), null, 0, 10);
         }
 
         private int _angle;
@@ -32,43 +32,41 @@ namespace BattleCars
 
 
         private Point _location;
-        public Point Location
+        public Point Position
         {
             get { return _location; }
             set { SetProperty(ref _location, value); }
         }
 
-        private BitmapImage _img;
+        private BitmapImage _vehicleImage;
         public BitmapImage VehicleImage
         {
-            get { return _img; }
-            set { SetProperty(ref _img, value); }
+            get { return _vehicleImage; }
+            set { SetProperty(ref _vehicleImage, value); }
         }
 
-        private void Move()
+        public void Move()
         {
             if (RotationDirection < 0)
             {
-                Angle -= (int)Speed.LEFT;
+                Angle -= (int)Speed.ROTATION;
             }
             if (RotationDirection > 0)
             {
-                Angle += (int)Speed.RIGHT;
+                Angle += (int)Speed.ROTATION;
             }
 
+            double radians = (Math.PI / 180) * Angle;
+            var vector = new Vector() { X = Math.Sin(radians), Y = -Math.Cos(radians) };
 
-            //double radians = (Math.PI / 180) * Angle;
-            //var vector = new Vector() { X = Math.Sin(radians), Y = -Math.Cos(radians) };
-
-            //if (IsMovingForward)
-            //{
-            //    Location += (vector * (int)Speed.FORWARD);
-            //}
-            //else if (IsMovingBackward)
-            //{
-            //    Location -= (vector * (int)Speed.BACKWARD);
-            //}
+            if (IsMovingForward)
+            {
+                Position += (vector * (int)Speed.FORWARD);
+            }
+            else if (IsMovingBackward)
+            {
+                Position -= (vector * (int)Speed.BACKWARD);
+            }
         }
-
     }
 }

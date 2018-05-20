@@ -26,30 +26,30 @@ namespace BattleCars
 
                 //Player 1 keys
                 case Key.W:
-                    KeyIsPressed.P1_UP = true;
+                    P1_UP = true;
                     break;
                 case Key.A:
-                    KeyIsPressed.P1_LEFT = true;
+                    P1_LEFT = true;
                     break;
                 case Key.S:
-                    KeyIsPressed.P1_DOWN = true;
+                    P1_DOWN = true;
                     break;
                 case Key.D:
-                    KeyIsPressed.P1_RIGHT = true;
+                    P1_RIGHT = true;
                     break;
 
                 //Player 2 keys
                 case Key.Up:
-                    KeyIsPressed.P2_UP = true;
+                    P2_UP = true;
                     break;
                 case Key.Down:
-                    KeyIsPressed.P2_DOWN = true;
+                    P2_DOWN = true;
                     break;
                 case Key.Left:
-                    KeyIsPressed.P2_LEFT = true;
+                    P2_LEFT = true;
                     break;
                 case Key.Right:
-                    KeyIsPressed.P2_RIGHT = true;
+                    P2_RIGHT = true;
                     break;
             }
         }
@@ -60,45 +60,31 @@ namespace BattleCars
             {
                 //Player 1
                 case Key.W:
-                    KeyIsPressed.P1_UP = false;
+                    P1_UP = false;
                     break;
                 case Key.A:
-                    KeyIsPressed.P1_LEFT = false;
+                    P1_LEFT = false;
                     break;
                 case Key.S:
-                    KeyIsPressed.P1_DOWN = false;
+                    P1_DOWN = false;
                     break;
                 case Key.D:
-                    KeyIsPressed.P1_RIGHT = false;
+                    P1_RIGHT = false;
                     break;
 
                 //Player 2
                 case Key.Up:
-                    KeyIsPressed.P2_UP = false;
+                    P2_UP = false;
                     break;
                 case Key.Down:
-                    KeyIsPressed.P2_DOWN = false;
+                    P2_DOWN = false;
                     break;
                 case Key.Left:
-                    KeyIsPressed.P2_LEFT = false;
+                    P2_LEFT = false;
                     break;
                 case Key.Right:
-                    KeyIsPressed.P2_RIGHT = false;
+                    P2_RIGHT = false;
                     break;
-            }
-    }
-
-        public static bool CheckForTruths
-        {
-            get
-            {
-
-                if (P1_UP || P1_DOWN || P1_LEFT || P1_RIGHT || P2_UP || P2_DOWN || P2_LEFT || P2_RIGHT)
-                {
-                    return true;
-                }
-
-                else return false;
             }
         }
     }

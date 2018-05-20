@@ -27,7 +27,5 @@ namespace BattleCars.Controls
         {
             InitializeComponent();
         }
-
-        
     }
 }

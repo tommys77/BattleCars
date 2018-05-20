@@ -113,7 +113,7 @@
     <Content Include="Resources\red_car.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Resource Include="Resources\start.png" />
+    <Resource Include="Resources\start_grid.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ViewModel\" />
