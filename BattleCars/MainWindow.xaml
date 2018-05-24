@@ -5,15 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BattleCars"
         mc:Ignorable="d"
-        Title="Battle Cars" Height="450" Width="859.768" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp">
+        Title="Battle Cars" Height="450" Width="855.192" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp">
     <Grid x:Name="grid">
         <Canvas x:Name="arena" Height="{Binding ElementName=grid, Path=Height}" Width="{Binding ElementName=grid, Path=Width}">
-            <Rectangle x:Name="p1grid" Width="79" Height="99" Canvas.Left="10" Canvas.Top="136">
+            <Rectangle x:Name="p1grid" Width="69" Height="99" Canvas.Left="10" Canvas.Top="136">
                 <Rectangle.Fill>
                     <ImageBrush ImageSource="/Resources/start_grid.png" TileMode="Tile" ViewportUnits="Absolute" Viewport="0, 0, 20, 20"/>
                 </Rectangle.Fill>
             </Rectangle>
-            <Rectangle x:Name="p2grid" Width="79" Height="99" Canvas.Left="753" Canvas.Top="136">
+            <Rectangle x:Name="p2grid" Width="69" Height="99" Canvas.Left="753" Canvas.Top="136">
                 <Rectangle.Fill>
                     <ImageBrush ImageSource="Resources/start_grid.png" TileMode="Tile" ViewportUnits="Absolute" Viewport="0, 0, 20, 20"/>
                 </Rectangle.Fill>

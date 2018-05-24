@@ -26,6 +26,7 @@ namespace BattleCars
 
         private BitmapImage blue_car = new BitmapImage(new Uri(@"pack://siteoforigin:,,,/resources/blue_car.png"));
         private BitmapImage red_car = new BitmapImage(new Uri(@"pack://siteoforigin:,,,/resources/red_car.png"));
+        private BitmapImage explosion = new BitmapImage(new Uri(@"pack://siteoforigin:,,,/resources/explosion.png"));
 
         private PlayerControl _p1;
         private PlayerControl _p2;
@@ -35,14 +36,10 @@ namespace BattleCars
 
         private Vehicle player1;
         private Vehicle player2;
-        //private string blue = "p1";
-        //private string red = "p2";
 
         private ObservableCollection<Image> players = new ObservableCollection<Image>();
 
         DispatcherTimer timer = new DispatcherTimer();
-
-        // double p1_X, p1_Y, p2_X, p2_Y;
 
         public MainWindow()
         {
@@ -52,9 +49,7 @@ namespace BattleCars
 
         public void InitializeGame()
         {
-            timer.Interval = TimeSpan.FromMilliseconds(10);
-            timer.Tick += new EventHandler(TimerTick);
-            timer.Start();
+
 
             SetupGame();
 
@@ -68,30 +63,31 @@ namespace BattleCars
             arena.Children.Add(_p1);
             arena.Children.Add(_p2);
 
-            p1StartPos = new Point(Canvas.GetLeft(p1grid) + (p1grid.Width / 2) - (_p1.vehicle.Width / 2), Canvas.GetTop(p1grid) + (p1grid.Height / 3));
-            p2StartPos = new Point(Canvas.GetLeft(p2grid) + (p2grid.Width / 2) - (_p2.vehicle.Width / 2), Canvas.GetTop(p2grid) + (p2grid.Height / 3));
+            p1StartPos = new Point(Canvas.GetLeft(p1grid) + (p1grid.Width / 2) - ((int)Vehicle.Size.WIDTH / 2), Canvas.GetTop(p1grid) + (p1grid.Height / 3));
+            p2StartPos = new Point(Canvas.GetLeft(p2grid) + (p2grid.Width / 2) - ((int)Vehicle.Size.WIDTH / 2), Canvas.GetTop(p2grid) + (p2grid.Height / 3));
 
             player1 = new Vehicle()
             {
                 Position = p1StartPos,
+                StartPosition = p1StartPos,
                 VehicleImage = blue_car,
-                Angle = 180
+                Angle = 180,
             };
 
 
             player2 = new Vehicle()
             {
                 Position = p2StartPos,
+                StartPosition = p2StartPos,
                 VehicleImage = red_car,
             };
 
             _p1.DataContext = player1;
             _p2.DataContext = player2;
 
-            //p1_X = player1.Position.X;
-            //p1_Y = player1.Position.Y;
-            //p2_X = player2.Position.X;
-            //p2_Y = player2.Position.Y;
+            timer.Interval = TimeSpan.FromMilliseconds(10);
+            timer.Tick += new EventHandler(TimerTick);
+            timer.Start();
         }
 
         private void TimerTick(object sender, EventArgs e)
@@ -195,7 +191,36 @@ namespace BattleCars
                 }
 
                 vehicle.Position = pos;
+                CollisionDetection(vehicle);
                 vehicle.Move();
+            }
+        }
+
+        // Quick and dirty collision detection.
+
+        private void CollisionDetection(Vehicle player)
+        {
+            var activePlayers = arena.Children.OfType<PlayerControl>();
+
+            foreach (var other in activePlayers)
+            {
+                Vehicle rival;
+                if (other.DataContext != player)
+                {
+                    rival = other.DataContext as Vehicle;
+
+                    Rect rect1 = new Rect { Width = player.VehicleWidth, Height = player.VehicleHeight, Location = player.Position };
+                    Rect rect2 = new Rect { Width = rival.VehicleWidth, Height = rival.VehicleHeight, Location = rival.Position };
+
+                    if (rect1.IntersectsWith(rect2))
+                    {
+                        player.Angle -= 45;
+                        rival.Angle += 45;
+                        //player.VehicleImage = explosion;
+                        //player.VehicleWidth = 50;
+                        //player.VehicleHeight = 60;
+                    }
+                }
             }
         }
 

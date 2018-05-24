@@ -110,6 +110,9 @@
     <Content Include="Resources\blue_car.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\explosion.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\red_car.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <Image x:Name="vehicle" Source="{Binding VehicleImage}" Width="20"  RenderTransformOrigin="0.5, 0.5">
+        <Image x:Name="vehicle" Source="{Binding VehicleImage}" Width="{Binding VehicleWidth}" Height="{Binding VehicleHeight}" RenderTransformOrigin="0.5, 0.5">
             <Image.RenderTransform>
             <RotateTransform Angle="{Binding Angle}"/>
             </Image.RenderTransform>

@@ -15,12 +15,16 @@ namespace BattleCars
         public bool IsMovingForward { get; set; }
         public bool IsMovingBackward { get; set; }
         public int RotationDirection { get; set; }
+        public Point StartPosition { get; set; }
 
         public enum Speed { FORWARD = 5, BACKWARD = 2, ROTATION = 3 }
 
+        public enum Size { WIDTH = 20, HEIGHT = 35 }
+
         public Vehicle()
         {
-            // Timer timer = new Timer(x => Move(), null, 0, 10);
+            VehicleWidth = (int)Size.WIDTH;
+            VehicleHeight = (int)Size.HEIGHT;
         }
 
         private int _angle;
@@ -36,6 +40,20 @@ namespace BattleCars
         {
             get { return _location; }
             set { SetProperty(ref _location, value); }
+        }
+
+        private int _vehicleWidth;
+        public int VehicleWidth
+        {
+            get { return _vehicleWidth; }
+            set { SetProperty(ref _vehicleWidth, value); }
+        }
+
+        private int _vehicleHeight;
+        public int VehicleHeight
+        {
+            get { return _vehicleHeight; }
+            set { SetProperty(ref _vehicleHeight, value); }
         }
 
         private BitmapImage _vehicleImage;

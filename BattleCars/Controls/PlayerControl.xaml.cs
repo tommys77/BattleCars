@@ -22,7 +22,6 @@ namespace BattleCars.Controls
     /// </summary>
     public partial class PlayerControl : UserControl
     {
-
         public PlayerControl()
         {
             InitializeComponent();
