@@ -16,6 +16,7 @@ namespace BattleCars
         public bool IsMovingBackward { get; set; }
         public int RotationDirection { get; set; }
         public Point StartPosition { get; set; }
+        public bool Exploded;
 
         public enum Speed { FORWARD = 5, BACKWARD = 2, ROTATION = 3 }
 
@@ -65,11 +66,11 @@ namespace BattleCars
 
         public void Move()
         {
-            if (RotationDirection < 0)
+            if (RotationDirection < 0 && !Exploded)
             {
                 Angle -= (int)Speed.ROTATION;
             }
-            if (RotationDirection > 0)
+            if (RotationDirection > 0 && !Exploded)
             {
                 Angle += (int)Speed.ROTATION;
             }

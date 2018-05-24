@@ -47,15 +47,8 @@ namespace BattleCars
             InitializeGame();
         }
 
+
         public void InitializeGame()
-        {
-
-
-            SetupGame();
-
-        }
-
-        public void SetupGame()
         {
             _p1 = new PlayerControl();
             _p2 = new PlayerControl();
@@ -214,14 +207,25 @@ namespace BattleCars
 
                     if (rect1.IntersectsWith(rect2))
                     {
-                        player.Angle -= 45;
-                        rival.Angle += 45;
-                        //player.VehicleImage = explosion;
+                        //player.Angle -= 45;
+                        //rival.Angle += 45;
+
+                        CarExplosion(player);
+                        CarExplosion(rival);
+
                         //player.VehicleWidth = 50;
                         //player.VehicleHeight = 60;
                     }
                 }
             }
+        }
+
+        private void CarExplosion(Vehicle vehicle)
+        {
+            vehicle.Exploded = true;
+            vehicle.VehicleImage = explosion;
+            vehicle.VehicleWidth = 50;
+            vehicle.VehicleHeight = 40;
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
