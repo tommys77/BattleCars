@@ -26,8 +26,7 @@ namespace BattleCars
 
         private BitmapImage blue_car = new BitmapImage(new Uri(@"pack://siteoforigin:,,,/resources/blue_car.png"));
         private BitmapImage red_car = new BitmapImage(new Uri(@"pack://siteoforigin:,,,/resources/red_car.png"));
-        private BitmapImage explosion = new BitmapImage(new Uri(@"pack://siteoforigin:,,,/resources/explosion.png"));
-
+        
         private PlayerControl _p1;
         private PlayerControl _p2;
 
@@ -61,18 +60,16 @@ namespace BattleCars
 
             player1 = new Vehicle()
             {
-                Position = p1StartPos,
                 StartPosition = p1StartPos,
-                VehicleImage = blue_car,
-                Angle = 180,
+                DefaultVehicleImage = blue_car,
+                DefaultAngle = 180,
             };
 
 
             player2 = new Vehicle()
             {
-                Position = p2StartPos,
                 StartPosition = p2StartPos,
-                VehicleImage = red_car,
+                DefaultVehicleImage = red_car,
             };
 
             _p1.DataContext = player1;
@@ -210,22 +207,13 @@ namespace BattleCars
                         //player.Angle -= 45;
                         //rival.Angle += 45;
 
-                        CarExplosion(player);
-                        CarExplosion(rival);
+                        player.Exploded = true;
 
                         //player.VehicleWidth = 50;
                         //player.VehicleHeight = 60;
                     }
                 }
             }
-        }
-
-        private void CarExplosion(Vehicle vehicle)
-        {
-            vehicle.Exploded = true;
-            vehicle.VehicleImage = explosion;
-            vehicle.VehicleWidth = 50;
-            vehicle.VehicleHeight = 40;
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
