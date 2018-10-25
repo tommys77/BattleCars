@@ -13,12 +13,15 @@ namespace BattleCars
         public static bool P1_DOWN = false;
         public static bool P1_LEFT = false;
         public static bool P1_RIGHT = false;
+        public static bool P1_FIRE = false;
 
         public static bool P2_UP = false;
         public static bool P2_DOWN = false;
         public static bool P2_LEFT = false;
         public static bool P2_RIGHT = false;
+        public static bool P2_FIRE = false;
 
+        
         public static void SetTrue(Key key)
         {
             switch (key)
@@ -37,6 +40,9 @@ namespace BattleCars
                 case Key.D:
                     P1_RIGHT = true;
                     break;
+                case Key.Space:
+                    P1_FIRE = true;
+                    break;
 
                 //Player 2 keys
                 case Key.Up:
@@ -50,6 +56,9 @@ namespace BattleCars
                     break;
                 case Key.Right:
                     P2_RIGHT = true;
+                    break;
+                case Key.Enter:
+                    P2_FIRE = true;
                     break;
             }
         }
@@ -71,6 +80,9 @@ namespace BattleCars
                 case Key.D:
                     P1_RIGHT = false;
                     break;
+                case Key.Space:
+                    P1_FIRE = false;
+                    break;
 
                 //Player 2
                 case Key.Up:
@@ -84,6 +96,9 @@ namespace BattleCars
                     break;
                 case Key.Right:
                     P2_RIGHT = false;
+                    break;
+                case Key.Enter:
+                    P2_FIRE = false;
                     break;
             }
         }

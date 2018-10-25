@@ -17,10 +17,9 @@ namespace BattleCars
         public int RotationDirection { get; set; }
 
         public BitmapImage DefaultVehicleImage { get; set; }
-        private BitmapImage _explosionImage = new BitmapImage(new Uri(@"pack://siteoforigin:,,,/resources/explosion.png"));
+        private readonly BitmapImage _explosionImage = new BitmapImage(new Uri(@"pack://siteoforigin:,,,/resources/explosion.png"));
 
-
-        public bool Exploded;
+        public bool Exploded = false;
 
         public enum Speed { FORWARD = 5, BACKWARD = 2, ROTATION = 3 }
         public enum Size { WIDTH = 20, HEIGHT = 35 }
@@ -103,35 +102,36 @@ namespace BattleCars
 
         public void Move()
         {
-
-            if (RotationDirection < 0 && !Exploded)
-            {
-                Angle -= (int)Speed.ROTATION;
-            }
-            if (RotationDirection > 0 && !Exploded)
-            {
-                Angle += (int)Speed.ROTATION;
-            }
-
-            double radians = (Math.PI / 180) * Angle;
-            var vector = new Vector() { X = Math.Sin(radians), Y = -Math.Cos(radians) };
-
-            if (IsMovingForward && !Exploded)
-            {
-                Position += (vector * (int)Speed.FORWARD);
-            }
-            else if (IsMovingBackward && !Exploded)
-            {
-                Position -= (vector * (int)Speed.BACKWARD);
-            }
-
             if (Exploded)
             {
-                Explosion();
+                Explode();
+            }
+            else
+            {
+                if (RotationDirection < 0)
+                {
+                    Angle -= (int)Speed.ROTATION;
+                }
+                if (RotationDirection > 0)
+                {
+                    Angle += (int)Speed.ROTATION;
+                }
+
+                double radians = (Math.PI / 180) * Angle;
+                var vector = new Vector() { X = Math.Sin(radians), Y = -Math.Cos(radians) };
+
+                if (IsMovingForward)
+                {
+                    Position += (vector * (int)Speed.FORWARD);
+                }
+                else if (IsMovingBackward)
+                {
+                    Position -= (vector * (int)Speed.BACKWARD);
+                }
             }
         }
 
-        private void Explosion()
+        private void Explode()
         {
             VehicleImage = _explosionImage;
             VehicleWidth = (int)Size.WIDTH * 2;
@@ -141,7 +141,6 @@ namespace BattleCars
 
         private void CountDownToReset()
         {
-            Exploded = false;
             timer.Elapsed += new ElapsedEventHandler(ResetVehicle);
             timer.Enabled = true;
             timer.Start();
@@ -156,6 +155,7 @@ namespace BattleCars
             VehicleWidth = (int)Size.WIDTH;
             timer.Enabled = false;
             timer.Stop();
+            Exploded = false;
         }
     }
 
